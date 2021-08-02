@@ -8,3 +8,11 @@ export const getUsers = () => {
         }
     })
 }
+
+export const getRandomPuppy = () => {
+    const url = "https://dog.ceo/api/breeds/image/random";
+
+    return fetch(url, {
+        method: "GET"
+    });
+}

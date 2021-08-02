@@ -5,6 +5,7 @@ interface BoxOptions extends HTMLAttributes<HTMLDivElement> {
     children: any;
     margin?: string;
     padding?: string;
+    className?: string;
 }
 
 const CustomDiv = styled.div<BoxOptions>`
@@ -16,8 +17,10 @@ export const Box: FC<BoxOptions> = ({
     children,
     margin = "auto",
     padding = "auto",
+    className = "",
 }) => (
     <CustomDiv
+        className={className}
         margin={margin}
         padding={padding}
     >

@@ -7,6 +7,7 @@ interface UserCardOptions {
     className?: string;
     name: string;
     mail: string;
+    img?: any;
 }
 
 type UserCardProps = HTMLAttributes<HTMLDivElement> & UserCardOptions;
@@ -16,9 +17,24 @@ const CustomBox = styled(Box)`
   box-shadow: 0 15px 20px rgba(0, 0, 0, 0.356);
   width: 400px;
   border-radius: 5%;
-  background-color: #CBAACB;
+  background-color: #fff;
   @media (max-width: 400px) {
     width: 340px;
+  }
+`;
+
+const CustomImgBox = styled(Box)`
+  flex-grow: 1;
+`;
+
+const CustomImg = styled.img`
+  border-radius: 10%;
+  margin: 10px;
+  width: 128px;
+  height: 128px;
+  @media (max-width: 400px) {
+    width: 60px;
+    height: 60px;
   }
 `;
 
@@ -31,15 +47,17 @@ export const UserCard: React.FC<UserCardProps> = ({
     className = "",
     name,
     mail,
+    img,
 }) => {
     return (
         <CustomBox className={className}>
-            <Box>
-            </Box>
-            <CustomInfoUserBox>
-                <Text>{name}</Text>
-                <Text>{mail}</Text>
-            </CustomInfoUserBox>
+          <CustomImgBox>
+            <CustomImg src={img} alt="Cargando" />
+          </CustomImgBox>
+          <CustomInfoUserBox>
+              <Text>{name}</Text>
+              <Text>{mail}</Text>
+          </CustomInfoUserBox>
         </CustomBox>
     )
 }

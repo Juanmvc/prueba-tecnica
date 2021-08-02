@@ -3,28 +3,28 @@ import { Box } from "../components/Box/Box"
 import { Text } from "../components/Text/Text"
 import DataTable from "react-data-table-component"
 import { useEffect, useState } from "react";
-import { getUsers } from "../repositories/dataRepositories/dataRepository"
+import { getUsers, getRandomPuppy } from "../repositories/dataRepositories/dataRepository"
 import { UserCard } from "../components/UserCard/UserCard"
 
 const columns = [
     {
         name: "Id",
-        selector: "id",
-        sortable: true,
+        selector: (row: { id: any; }) => `${ row.id }`,
+        sortable: false,
     },
     {
         name: "Name",
-        selector: "name",
+        selector: (row: { name: string; }) => `${ row.name }`,
         sortable: true,
     },
     {
         name: "Username",
-        selector: "username",
+        selector: (row: { username: string; }) => `${ row.username }`,
         sortable: true,
     },
     {
         name: "Email",
-        selector: "email",
+        selector: (row: { email: string; }) => `${ row.email }`,
         sortable: true,
     }
 ]
@@ -43,6 +43,7 @@ const CustomGridCards = styled(Box)`
   grid-row-gap: 50px;
   grid-column-gap: 20px;
   max-width: 1500px;
+  margin-bottom: 30px;
   @media (max-width: 1250px) {
     grid-template-columns: 1fr 1fr;
   }
@@ -52,7 +53,8 @@ const CustomGridCards = styled(Box)`
 `;
 
 interface userData {
-    id: any;
+    img: any;
+    id: number;
     name: string;
     username: string,
     email: string;
@@ -60,7 +62,8 @@ interface userData {
 
 export const Users = () => {
 
-    const [userData, setUserData] = useState<userData[]>([])
+    const [userData, setUserData] = useState<userData[]>([]);
+    const [listProfileImages, setListProfileImages] = useState<string[]>([]);
 
     useEffect(() => {
         getUsers() 
@@ -68,8 +71,28 @@ export const Users = () => {
             .then((data) => {
                 setUserData(data);
             })
+            .then(() => {
+                
+            })
             .catch((error) => console.log(error));
-    })
+    },[])
+
+    useEffect(() => {
+        const userDataWithImg = userData;
+        let listOfProfileImages: Array<string> = [];
+        userDataWithImg.forEach(function (user, index) {
+            getRandomPuppy()
+                .then((res) => res.json())
+                .then((data) => {
+                    listOfProfileImages.push(data.message);
+                    if(index+1 === userDataWithImg.length) {
+                        setListProfileImages(listOfProfileImages)
+                        }
+                })           
+        })
+
+    }, [userData])
+
     return (
         <CustomBoxUsers>
             <Text fontSize="48px" weight="bold" textAlign="center">
@@ -79,13 +102,17 @@ export const Users = () => {
                 {userData.map((userData, index) => (
                     <UserCard
                     key={index}
+                    img={listProfileImages[index]}
                     className="userCard"
                     mail={userData.email}
                     name={userData.name}
                     />
                 ))}
             </CustomGridCards>
-            <Box>
+            <Box margin="0 20px 0 20px" padding="0 0 50px 0">
+                <Text fontSize="48px" weight="bold" textAlign="center">
+                    ¡Contacta con tus clientes!
+                </Text>
                 <DataTable
                     columns={columns}
                     data={userData}
